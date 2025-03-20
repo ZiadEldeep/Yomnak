@@ -3,6 +3,7 @@
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\MessageController;
+use App\Http\Controllers\ServiceController;
 
 // ✅ مسارات عامة
 Route::post('/register', [UserController::class, 'register']);
@@ -23,3 +24,10 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/messages/{receiver_id}', [MessageController::class, 'getMessages']);
     Route::post('/messages/read/{message_id}', [MessageController::class, 'markAsRead']);
 });
+
+
+Route::post('/services', [ServiceController::class, 'store']); // إضافة خدمة جديدة
+Route::get('/services', [ServiceController::class, 'index']); // عرض جميع الخدمات
+Route::get('/services/{id}', [ServiceController::class, 'show']); // عرض خدمة معينة
+Route::put('/services/{id}', [ServiceController::class, 'update']); // تحديث خدمة
+Route::delete('/services/{id}', [ServiceController::class, 'destroy']); // حذف خدمة
