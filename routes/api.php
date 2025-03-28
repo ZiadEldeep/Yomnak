@@ -1,33 +1,36 @@
 <?php
 
-use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
+
+use App\Http\Controllers\NotificationController;
+
+Route::post('/notifications', [NotificationController::class, 'store']);
+Route::get('/notifications/{userId}', [NotificationController::class, 'index']);
+Route::delete('/notifications/{userId}/{notificationId}', [NotificationController::class, 'destroy']);
+
+
 use App\Http\Controllers\MessageController;
+
+Route::middleware('auth:sanctum')->group(function () {
+    Route::post('/messages/send', [MessageController::class, 'sendMessage']); // إرسال رسالة
+    Route::get('/messages/{receiver_id}', [MessageController::class, 'getMessages']); // جلب جميع الرسائل بين المستخدم الحالي ومستلم معين
+    Route::patch('/messages/read/{message_id}', [MessageController::class, 'markAsRead']); // تحديث حالة الرسائل إلى مقروءة
+});
+
 use App\Http\Controllers\ServiceController;
 
-// ✅ مسارات عامة
-Route::post('/register', [UserController::class, 'register']);
-Route::post('/login', [UserController::class, 'login']);
-Route::post('/update-password', [UserController::class, 'updatePassword']);
-Route::post('/send-code', [UserController::class, 'sendVerificationCode']);
-
-
-// ✅ مسارات محمية للمستخدمين المسجلين فقط
 Route::middleware('auth:sanctum')->group(function () {
-    Route::get('/user', function (Request $request) {
-        return response()->json(['user' => $request->user()]);
-    });
-});
-
-Route::middleware('auth:sanctum')->group(function () {
-    Route::post('/messages/send', [MessageController::class, 'sendMessage']);
-    Route::get('/messages/{receiver_id}', [MessageController::class, 'getMessages']);
-    Route::post('/messages/read/{message_id}', [MessageController::class, 'markAsRead']);
+    Route::post('/services', [ServiceController::class, 'store']); // إضافة خدمة جديدة
+    Route::get('/services', [ServiceController::class, 'index']); // عرض جميع الخدمات
+    Route::get('/services/{id}', [ServiceController::class, 'show']); // عرض خدمة معينة
+    Route::put('/services/{id}', [ServiceController::class, 'update']); // تحديث خدمة
+    Route::delete('/services/{id}', [ServiceController::class, 'destroy']); // حذف خدمة
 });
 
 
-Route::post('/services', [ServiceController::class, 'store']); // إضافة خدمة جديدة
-Route::get('/services', [ServiceController::class, 'index']); // عرض جميع الخدمات
-Route::get('/services/{id}', [ServiceController::class, 'show']); // عرض خدمة معينة
-Route::put('/services/{id}', [ServiceController::class, 'update']); // تحديث خدمة
-Route::delete('/services/{id}', [ServiceController::class, 'destroy']); // حذف خدمة
+use App\Http\Controllers\UserController;
+
+Route::post('/register', [UserController::class, 'register']); // تسجيل مستخدم جديد
+Route::post('/login', [UserController::class, 'login']); // تسجيل الدخول
+Route::post('/send-verification-code', [UserController::class, 'sendVerificationCode']); // إرسال كود التحقق
+Route::post('/update-password', [UserController::class, 'updatePassword']); // تحديث كلمة المرور
