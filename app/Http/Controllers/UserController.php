@@ -7,7 +7,12 @@ use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Cache; // ✅ تم إضافة هذا السطر
+<<<<<<< HEAD
 use App\Models\User;
+=======
+use App\Models\Users;
+use App\Mail\SendCodeMail;
+>>>>>>> f3446f99f5d101c032f2eaacd74cfbf7adadadb1
 
 class UserController extends Controller
 {
@@ -23,8 +28,12 @@ class UserController extends Controller
                 'password' => 'required|string|min:6',
             ]);
 
+<<<<<<< HEAD
             // ✅ إنشاء المستخدم
             $user = User::create([
+=======
+            $user = Users::create([
+>>>>>>> f3446f99f5d101c032f2eaacd74cfbf7adadadb1
                 'name' => $validatedData['name'],
                 'email' => $validatedData['email'],
                 'phone' => $validatedData['phone'],
@@ -46,7 +55,7 @@ class UserController extends Controller
             'password' => 'required|string',
         ]);
 
-        $user = User::where('email', $credentials['email'])->first();
+        $user = Users::where('email', $credentials['email'])->first();
 
         if (!$user || !Hash::check($credentials['password'], $user->password)) {
             return response()->json(['message' => 'بيانات تسجيل الدخول غير صحيحة'], 401);
