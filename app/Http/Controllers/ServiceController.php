@@ -120,4 +120,13 @@ class ServiceController extends Controller
         $service->delete();
         return response()->json(['message' => 'تم حذف الخدمة بنجاح']);
     }
+    public function getAllServiceNames()
+{
+    $serviceNames = Service::pluck('service_name'); // جلب جميع أسماء الخدمات فقط
+
+    return response()->json([
+        'service_names' => $serviceNames
+    ]);
+}
+
 }

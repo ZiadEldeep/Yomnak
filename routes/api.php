@@ -1,7 +1,7 @@
 <?php
 
-use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\UserController;
 use App\Http\Controllers\MessageController;
 use App\Http\Controllers\ServiceController;
 
@@ -31,3 +31,4 @@ Route::get('/services', [ServiceController::class, 'index']); // عرض جميع
 Route::get('/services/{id}', [ServiceController::class, 'show']); // عرض خدمة معينة
 Route::put('/services/{id}', [ServiceController::class, 'update']); // تحديث خدمة
 Route::delete('/services/{id}', [ServiceController::class, 'destroy']); // حذف خدمة
+Route::get('/services', [ServiceController::class, 'getAllServiceNames']);

@@ -8,7 +8,6 @@ use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Cache; // ✅ تم إضافة هذا السطر
 use App\Models\User;
-use App\Mail\SendCodeMail;
 
 class UserController extends Controller
 {
@@ -16,6 +15,7 @@ class UserController extends Controller
     public function register(Request $request)
     {
         try {
+            // ✅ التحقق من البيانات المدخلة
             $validatedData = $request->validate([
                 'name' => 'required|string|max:255',
                 'email' => 'required|email|unique:users',
@@ -23,6 +23,7 @@ class UserController extends Controller
                 'password' => 'required|string|min:6',
             ]);
 
+            // ✅ إنشاء المستخدم
             $user = User::create([
                 'name' => $validatedData['name'],
                 'email' => $validatedData['email'],
@@ -61,6 +62,7 @@ class UserController extends Controller
         return response()->json(['message' => 'تم تسجيل الدخول بنجاح', 'user' => $user, 'token' => $token]);
     }
 
+    // ✅ تحديث كلمة المرور
     public function updatePassword(Request $request)
     {
         // ✅ التحقق من البيانات المدخلة
@@ -84,10 +86,12 @@ class UserController extends Controller
 
             return response()->json(['message' => 'تم تحديث كلمة المرور بنجاح'], 200);
         } catch (\Exception $e) {
+            Log::error("خطأ في تحديث كلمة المرور: " . $e->getMessage());
             return response()->json(['message' => 'حدث خطأ أثناء التحديث'], 500);
         }
     }
 
+    // ✅ إرسال كود التحقق
     public function sendVerificationCode(Request $request)
     {
         $request->validate([
@@ -107,7 +111,6 @@ class UserController extends Controller
                         ->subject('كود التحقق الخاص بك');
             });
 
-            // ✅ إرجاع كود التحقق في الاستجابة أيضًا
             return response()->json([
                 'message' => 'تم إرسال كود التحقق بنجاح',
                 'verification_code' => $code
@@ -115,7 +118,6 @@ class UserController extends Controller
 
         } catch (\Throwable $e) {
             Log::error("خطأ في إرسال كود التحقق: " . $e->getMessage());
-
             return response()->json([
                 'message' => 'حدث خطأ أثناء إرسال الكود',
                 'error' => $e->getMessage()
